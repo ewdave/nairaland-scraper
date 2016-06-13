@@ -7,12 +7,16 @@ var request = require('request')
 /* 
 * A scraper for Nairaland's front page
 * lists the latest 20 topics
+*
+*
+* TODO: extract from nairaland's SERP
 */
 
 var NairalandScraper = module.exports = function(options) {
 
 	this._options = options || {};
 	this.baseUrl = options.baseUrl || "http://nairaland.com";
+
 }
 
 NairalandScraper.prototype.getScrapedData = function(callback) {
