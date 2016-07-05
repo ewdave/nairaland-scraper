@@ -4,28 +4,21 @@ var request = require('request')
 	, cheerio = require('cheerio')
 	;
 
-/* 
-* A scraper for Nairaland's front page
-* lists the latest 20 topics
-*
-*
-* TODO: extract from nairaland's SERP
-*/
 
 var NairalandScraper = module.exports = function(options) {
 
 	this._options = options || {};
-	this.baseUrl = options.baseUrl || "http://nairaland.com";
-	this.serpURI = options.serpURI || this.baseUrl + '/search?q=buhari&board=20';
+	this.baseUrl = options.baseURI || "http://nairaland.com";
+	this.serpURI = options.serpURI || this.baseURI + '/search';
 
 }
 
-NairalandScraper.prototype.getScrapedData = function(callback) {
+NairalandScraper.prototype.getScrapedData = function(limit, callback) {
 	var self = this;
 
-	this.getHtml(function(err, data) {
+	this.getHtml(self.baseURI, function(err, data) {
 		if (err) { return callback(err, null) };
-		self.extractData(data, function(err, results) {
+		self.extractData(data, limit, function(err, results) {
 			if (err) { return callback(err, null) };
 			return callback(null,results);
 		});
@@ -35,31 +28,39 @@ NairalandScraper.prototype.getScrapedData = function(callback) {
 /*
 * Method to extract data from nairaland's 
 * SERP(Search Engine Results Page)
-* 
-*
 */
 
-NairalandScraper.prototype.getSERPScrapedData = function(callback) {
+NairalandScraper.prototype.getSERPScrapedData = function(params, callback) {
 	var self = this;
+	var limit;
+	var params = params || {};
+	if ("limit" in params) {
+		limit = params["limit"];
+	}
 
-	this.getHtml(self.serpURI, function(error, data) {
+	this.getHtml(self.serpURI, params, function(error, data) {
 		if (error) {
 			return callback(error, null);
 		};
-		self.extractSERPData(data, function(error, results) {
+		self.extractSERPData(data, limit, function(error, results) {
 			if (error) { return callback(error, null) };
 			return callback(null, results);
 		});
 	});
 };
 
-NairalandScraper.prototype.getHtml = function(url, callback) {
+NairalandScraper.prototype.getHtml = function(url, params, callback) {
+	var self = this;
+
 	if (url == null) {
 		url = this.baseUrl;
 	}
-	var self = this;
+	var params = params || {};
 
-	request(url, function(err, response, html) {
+	request({
+		url: url,
+		qs: params
+	}, function(err, response, html) {
 		if (err) { return callback(err, null) };
 		if (response.statusCode !== 200) {
 			var error = new Error(`Unexpected status code returned: ${response.statusCode}`)
@@ -71,10 +72,13 @@ NairalandScraper.prototype.getHtml = function(url, callback) {
 	});
 };
 
-NairalandScraper.prototype.extractSERPData = function (html, callback) {
+NairalandScraper.prototype.extractSERPData = function (html, limit, callback) {
+	if (limit == null) {
+		limit = 50;
+	};
 	var parsedResult = [];
 		$ = cheerio.load(html);
-		$('div.narrow').slice(0,5).each(function(i, el) {
+		$('div.narrow').slice(0,limit).each(function(i, el) {
 			var comment = $(this).text();
 			var metadata = {
 				comment: comment
@@ -84,10 +88,13 @@ NairalandScraper.prototype.extractSERPData = function (html, callback) {
 		});
 }
 
-NairalandScraper.prototype.extractData = function(html, callback) {
+NairalandScraper.prototype.extractData = function(html, limit, callback) {
+	if (limit == null) {
+		limit = 20;
+	};
 	var scraped_data = [];
 	var $ = cheerio.load(html);
-	var links = $('td.featured').children('a').slice(0,20);
+	var links = $('td.featured').children('a').slice(0,limit);
 	$(links).each(function(i, el) {
 		var title = $(this).text();
 		var url = $(this).attr('href');
