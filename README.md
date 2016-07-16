@@ -11,34 +11,35 @@ npm install nairaland-scraper
 ### Example
 
 ```js
-//var NLscraper = require('nairaland-scraper');
+var NLscraper = require('nairaland-scraper');
 
-var options = {};
 
 var latest = new NLScraper(options);
 
-// you can pass in an optional string before the callback function to limit the number of scraped data. Defaults to 20.
-latest.getScrapedData(25, function(err, topics) {
-	if (err) {console.log(err)}
+// you can pass in an optional object before the callback function to limit the number of scraped data. Defaults to 20.
+latest.getScrapedData({ limit: 10 }, function(err, topics) {
+	if (err) { console.log(err) };
 	console.log(topics);
-	//return topics;
-});
+	return topics;
+})
 ```
 
 ```javascript
-var options = {};
-
 var latest = new NLScraper(options);
 
-// You should pass in a params object to `getSERPScrapedData` to specify a certain keyword to query the site's data. 
-   `limit` is optional
+To scrape data from Nairaland's SERP, make a call to the `getSERPScrapedData` method specifying an options object with a specific keyword and board (must be an `int`, e.g. 0). You can also add a limit params to the options object to limit the number of comments returned
 
-var queryParams = {
-	"q": "buhari",
+var queryOptions = {
+	"q": "fuel",
+	"board": 0
 	"limit": 20
 }
-latest.getSERPScrapedData(queryParams, function(err, comments) {
+latest.getSERPScrapedData(queryOptions, function(err, comments) {
 	console.log(comments);
 	return;
 })
 ```
+
+## License
+
+[The MIT License](http://opensource.org/licenses/MIT)
