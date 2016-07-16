@@ -1,6 +1,6 @@
 {
   "name": "nairaland-scraper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Simple NodeJS tool to scrape topics and comments from Nairaland",
   "main": "scrape.js",
   "scripts": {

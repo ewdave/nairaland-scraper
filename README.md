@@ -14,7 +14,7 @@ npm install nairaland-scraper
 var NLscraper = require('nairaland-scraper');
 
 
-var latest = new NLScraper(options);
+var latest = new NLScraper();
 
 // you can pass in an optional object before the callback function to limit the number of scraped data. Defaults to 20.
 latest.getScrapedData({ limit: 10 }, function(err, topics) {
@@ -24,10 +24,10 @@ latest.getScrapedData({ limit: 10 }, function(err, topics) {
 })
 ```
 
-```javascript
-var latest = new NLScraper(options);
+```js
+var latest = new NLScraper();
 
-To scrape data from Nairaland's SERP, make a call to the `getSERPScrapedData` method specifying an options object with a specific keyword and board (must be an `int`, e.g. 0). You can also add a limit params to the options object to limit the number of comments returned
+To scrape data from Nairaland's SERP, make a call to the `getSERPScrapedData()` method specifying an options object with a specific keyword and board (must be an `int`, e.g. 0). You can also add a limit params to the options object to limit the number of comments returned
 
 var queryOptions = {
 	"q": "fuel",
