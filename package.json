@@ -1,7 +1,7 @@
 {
   "name": "nairaland-scraper",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Simple NodeJS tool to scrape topics and comments from Nairaland",
   "main": "scrape.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
